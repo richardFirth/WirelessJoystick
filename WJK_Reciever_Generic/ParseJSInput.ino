@@ -31,6 +31,7 @@
 
 void getLatestXBeeData()
 {
+  static unsigned long lastRecieved;
   XBeeFlushUnilLatest(); // get rid of all the data except the most recent two bytes.
 // fast projects may have an empty serial, in which case they do nothing
 // fast projects may also encounter a single byte, in which case they parse it (they will get the complimentary byte in ~ 10 millisends
@@ -42,10 +43,10 @@ void getLatestXBeeData()
         byte incomingData;
         incomingData = XBee.read();
         processTheByte(incomingData); // send byte to be unpacked
+        lastRecieved = millis(); // Reset all to default if we haven't heard from the remote in a while
       }
   }
   
-    lastRecieved = millis(); // Reset all to default if we haven't heard from the remote in a while
     if (lastRecieved + 250 < millis()){
       resetRemoteInput();
     }
