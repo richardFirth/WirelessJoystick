@@ -1,5 +1,5 @@
 
- // 10/21/17
+ // 11/8/17
  /*
  code 
  part of series
@@ -12,13 +12,21 @@
  */
  
  
- import processing.serial.*;
- Serial myPort;
+import processing.serial.*;
+Serial myPort;
+
+boolean ConnectedToSerial;
+String connectionPort;
+
+
+
+
 
 byte theInput[];
 
 boolean UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON,L_TRIG,R_TRIG,JOYSTICK_BUTTON;
 boolean batteryOK;
+
 
 float rawH = 512,rawV = 512;
 
@@ -32,19 +40,41 @@ float controllerHeight = 258; //280;
 void setup() {
   
   size(640, 640);
-  myPort = new Serial(this, "COM5", 9600);  //Set up serial - modify COM to your com
+  ConnectedToSerial = setupSerialPort();
+    
+    //Set up serial - modify COM to your com
   // myPort.bufferUntil('\n');                // DONT buffer until newline
+  
+
+  
+  
 }
 
 
 void draw() {
-  background(50,50,50);
+  if (Serial.list().length == 0) ConnectedToSerial = false;
+  
+  if (ConnectedToSerial){
+   background(50,60,50); 
+  } else {
+   background(60,50,50);  
+   ConnectedToSerial = false;
+  }
 
   drawController();
   drawButtons();
   drawLeftJoystick(); 
   //drawRightJoystick(); 
   drawBattery();
+  
+  fill(255);
+  if (ConnectedToSerial) {
+    text("Connected to " + connectionPort,5,height-14);
+  } else {
+    text("Not connected press space to reconnect",5,height-14);
+  }
+
+  
   
   delay(5);
 
@@ -118,3 +148,37 @@ void drawBattery()
   rect(width/2-25,75,baTTval/2,25);
   
 }
+
+
+boolean setupSerialPort()
+{
+   if(ConnectedToSerial)
+   {
+     println("Already Connected to " + connectionPort);
+     return true;
+   }
+ 
+  if (Serial.list().length > 0)
+  {
+    connectionPort = Serial.list()[0];
+    myPort = new Serial(this,Serial.list()[0], 9600);  //Set up serial
+    println("Connected to " + connectionPort); 
+    println(myPort);
+    return true;
+  }
+    println("No Valid Serial Port Found");
+    
+    return false;
+}
+
+
+void keyPressed() {
+ 
+  if(key==' '){
+     ConnectedToSerial = setupSerialPort();
+  }
+}
+  
+  
+  
+  
