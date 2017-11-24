@@ -14,9 +14,7 @@
  
 import processing.serial.*;
 Serial myPort;
-
-boolean ConnectedToSerial;
-String connectionPort;
+SerialConnector sc;
 
 
 
@@ -40,8 +38,8 @@ float controllerHeight = 258; //280;
 void setup() {
   
   size(640, 640);
-  ConnectedToSerial = setupSerialPort();
-    
+  sc = new SerialConnector(this,myPort);
+  sc.listPorts();  
     //Set up serial - modify COM to your com
   // myPort.bufferUntil('\n');                // DONT buffer until newline
   
@@ -52,13 +50,13 @@ void setup() {
 
 
 void draw() {
-  if (Serial.list().length == 0) ConnectedToSerial = false;
+ 
   
-  if (ConnectedToSerial){
+  if (sc.isConnected){
    background(50,60,50); 
   } else {
    background(60,50,50);  
-   ConnectedToSerial = false;
+   sc.isConnected = false;
   }
 
   drawController();
@@ -67,14 +65,7 @@ void draw() {
   //drawRightJoystick(); 
   drawBattery();
   
-  fill(255);
-  if (ConnectedToSerial) {
-    text("Connected to " + connectionPort,5,height-14);
-  } else {
-    text("Not connected press space to reconnect",5,height-14);
-  }
-
-  
+  sc.drawToScreen();
   
   delay(5);
 
@@ -150,33 +141,10 @@ void drawBattery()
 }
 
 
-boolean setupSerialPort()
-{
-   if(ConnectedToSerial)
-   {
-     println("Already Connected to " + connectionPort);
-     return true;
-   }
- 
-  if (Serial.list().length > 0)
-  {
-    connectionPort = Serial.list()[0];
-    myPort = new Serial(this,Serial.list()[0], 9600);  //Set up serial
-    println("Connected to " + connectionPort); 
-    println(myPort);
-    return true;
-  }
-    println("No Valid Serial Port Found");
-    
-    return false;
-}
-
 
 void keyPressed() {
  
-  if(key==' '){
-     ConnectedToSerial = setupSerialPort();
-  }
+  sc.KeyInputforConnection(key);
 }
   
   
