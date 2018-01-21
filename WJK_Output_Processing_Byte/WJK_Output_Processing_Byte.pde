@@ -17,9 +17,6 @@ Serial myPort;
 SerialConnector sc;
 
 
-
-
-
 byte theInput[];
 
 boolean UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON,L_TRIG,R_TRIG,JOYSTICK_BUTTON;
@@ -40,23 +37,17 @@ void setup() {
   size(640, 640);
   sc = new SerialConnector(this,myPort);
   sc.listPorts();  
+  sc.bufferTillN = false; // DONT buffer until newline
     //Set up serial - modify COM to your com
-  // myPort.bufferUntil('\n');                // DONT buffer until newline
-  
-
-  
-  
 }
 
 
 void draw() {
  
-  
   if (sc.isConnected){
    background(50,60,50); 
   } else {
    background(60,50,50);  
-   sc.isConnected = false;
   }
 
   drawController();
@@ -140,10 +131,7 @@ void drawBattery()
   
 }
 
-
-
 void keyPressed() {
- 
   sc.KeyInputforConnection(key);
 }
   
