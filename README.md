@@ -11,7 +11,7 @@ WJK_Output_Processing_Byte: contains processing3 code for use with an XBee explo
 WJK_Reciever_Generic: template arduino code for an arduino project that is on the recieving end of the Joystick.
 
 
-TODO - add keyboard spoof of joystick that uses XBee explorer.
+TODO - add processing3 keyboard spoof of joystick that uses XBee explorer.
 
 SparkfunXbee_4Nov17.pdf: contains overview & explanation of the code.
 
